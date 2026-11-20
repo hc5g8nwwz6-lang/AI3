@@ -1,0 +1,228 @@
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1424">
+<title>AI3 2.0 | Premium AI</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1424;--panel:#111e31;--line:#273b56;--blue:#65adff;--text:#eef5ff;--muted:#94a9c4;--green:#55d6a0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 50% -20%,#1c4775,transparent 55%),var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+header{max-width:1050px;margin:auto;padding:22px 18px;display:flex;justify-content:space-between;align-items:center}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-icon{background:linear-gradient(135deg,#5db5ff,#6375ed);width:43px;height:43px;border-radius:13px;display:grid;place-items:center;font-size:20px;font-weight:900;color:#081629;box-shadow:0 0 25px #438fff55}
+.logo h1{margin:0;font-size:22px}
+.logo small{color:var(--muted);font-size:10px;letter-spacing:2px}
+.container{max-width:950px;margin:auto;padding:10px 18px 50px}
+.hero{text-align:center;padding:40px 10px 28px}
+.hero .tag{color:var(--blue);font-size:11px;letter-spacing:3px}
+.hero h2{font-size:clamp(28px,6vw,43px);margin:12px 0;background:linear-gradient(90deg,#fff,#83bdff);background-clip:text;color:transparent}
+.hero p{color:var(--muted);font-size:14px}
+.card{background:linear-gradient(145deg,#15243a,#101b2d);border:1px solid var(--line);border-radius:19px;padding:19px;margin:14px 0;box-shadow:0 15px 40px #0002}
+.engines{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.engine{background:#0d192a;border:1px solid var(--line);border-radius:13px;padding:13px;text-align:center}
+.engine b{display:block;color:var(--blue);font-size:13px}
+.engine small{color:var(--muted);font-size:11px}
+.status{font-size:11px;color:var(--green);margin-top:6px}
+h3{font-size:16px;margin:0 0 13px}
+textarea,input{width:100%;background:#0b1728;color:white;border:1px solid #304662;border-radius:11px;padding:13px;outline:none}
+textarea:focus,input:focus{border-color:var(--blue)}
+textarea{min-height:115px;resize:vertical}
+button.primary{background:linear-gradient(100deg,#4f9cf4,#7a91ff);border:0;color:#071629;padding:13px 21px;border-radius:11px;font-weight:800}
+button.secondary{background:#1c3049;color:white;border:1px solid var(--line);padding:10px 14px;border-radius:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px}
+.answer{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.75;color:#e0ebfa;min-height:35px}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;color:#b5c7df;margin-bottom:6px}
+.field input{padding:11px}
+.hint{font-size:11px;color:var(--muted);line-height:1.7}
+.log{font-size:12px;color:var(--muted);padding:5px 0;border-bottom:1px solid #26364b}
+footer{text-align:center;color:#637995;font-size:11px;padding:25px}
+@media(max-width:520px){.engines{gap:6px}.engine{padding:10px 4px}.engine b{font-size:11px}.container{padding-left:12px;padding-right:12px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">
+  <div class="logo-icon">A3</div>
+  <div><h1>AI3 2.0</h1><small>PREMIUM AI WORKSPACE</small></div>
+ </div>
+ <button class="secondary" onclick="scrollToSettings()">⚙ 設定</button>
+</header>
+
+<main class="container">
+ <section class="hero">
+  <div class="tag">THREE ENGINES · ONE INTELLIGENCE</div>
+  <h2>超越單一 AI 的限制</h2>
+  <p>三大 AI 引擎整合・智慧選擇・自動故障備援</p>
+ </section>
+
+ <section class="card">
+  <h3>智慧引擎控制中心</h3>
+  <div class="engines">
+   <div class="engine"><b>GEMINI</b><small>主引擎</small><div class="status" id="s1">未設定</div></div>
+   <div class="engine"><b>GROQ</b><small>備援引擎</small><div class="status" id="s2">未設定</div></div>
+   <div class="engine"><b>OPENROUTER</b><small>第三引擎</small><div class="status" id="s3">未設定</div></div>
+  </div>
+  <div class="row"><span class="hint">自動切換模式</span><b style="color:#58dba5">● AUTO ENABLED</b></div>
+ </section>
+
+ <section class="card">
+  <h3>✦ AI3 智慧對話</h3>
+  <textarea id="question" placeholder="請輸入你的問題……"></textarea>
+  <div class="row">
+   <span class="hint" id="status">等待指令</span>
+   <button class="primary" id="send" onclick="askAI()">➤ 開始分析</button>
+  </div>
+ </section>
+
+ <section class="card">
+  <h3>AI 智慧回答</h3>
+  <div class="answer" id="answer">AI3 已就緒，請輸入問題。</div>
+  <div class="row"><span class="hint" id="source">尚未連線</span><button class="secondary" onclick="copyAnswer()">複製回答</button></div>
+ </section>
+
+ <section class="card" id="settings">
+  <h3>⚙ AI 引擎設定</h3>
+  <div class="field"><label>Gemini API Key</label><input id="k1" type="password" placeholder="輸入 Gemini Key"></div>
+  <div class="field"><label>Gemini 模型</label><input id="m1" value="gemini-2.5-flash"></div>
+  <div class="field"><label>Groq API Key</label><input id="k2" type="password" placeholder="輸入 Groq Key"></div>
+  <div class="field"><label>Groq 模型</label><input id="m2" value="llama-3.3-70b-versatile"></div>
+  <div class="field"><label>OpenRouter API Key</label><input id="k3" type="password" placeholder="輸入 OpenRouter Key"></div>
+  <div class="field"><label>OpenRouter 模型</label><input id="m3" value="meta-llama/llama-3.3-70b-instruct:free"></div>
+  <button class="primary" onclick="saveSettings()">儲存本機設定</button>
+  <p class="hint">金鑰只儲存在目前瀏覽器，不會寫入 GitHub。請勿在公用裝置使用。公開網站若要提供多人使用，應改採安全後端代理。</p>
+ </section>
+
+ <section class="card">
+  <h3>系統診斷紀錄</h3>
+  <div id="logs" class="hint">系統尚無紀錄。</div>
+ </section>
+</main>
+<footer>AI3 2.0 · PREMIUM INTELLIGENCE · PERSONAL EDITION</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let conversation=[];
+let busy=false;
+let logItems=[];
+
+function saveSettings(){
+ const data={
+  k1:$("k1").value,m1:$("m1").value,
+  k2:$("k2").value,m2:$("m2").value,
+  k3:$("k3").value,m3:$("m3").value
+ };
+ localStorage.setItem("ai3_settings",JSON.stringify(data));
+ updateStatus();
+ addLog("本機設定已儲存");
+}
+function loadSettings(){
+ try{
+  const d=JSON.parse(localStorage.getItem("ai3_settings")||"{}");
+  Object.keys(d).forEach(k=>{if($(k))$(k).value=d[k]});
+ }catch(e){addLog("設定讀取失敗");}
+ updateStatus();
+}
+function updateStatus(){
+ $("s1").textContent=$("k1").value?"已設定":"未設定";
+ $("s2").textContent=$("k2").value?"已設定":"未設定";
+ $("s3").textContent=$("k3").value?"已設定":"未設定";
+}
+function scrollToSettings(){$("settings").scrollIntoView({behavior:"smooth"});}
+function addLog(t){
+ logItems.unshift(new Date().toLocaleTimeString()+" · "+t);
+ logItems=logItems.slice(0,8);
+ $("logs").innerHTML=logItems.map(x=>"<div class='log'>"+escapeHTML(x)+"</div>").join("");
+}
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+async function gemini(key,model,messages){
+ const contents=messages.map(m=>({
+  role:m.role==="assistant"?"model":"user",
+  parts:[{text:m.content}]
+ }));
+ const url="https://generativelanguage.googleapis.com/v1beta/models/"+encodeURIComponent(model)+":generateContent?key="+encodeURIComponent(key);
+ const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contents})});
+ const body=await r.text();
+ if(!r.ok)throw Error("HTTP "+r.status+" "+body.slice(0,200));
+ const d=JSON.parse(body);
+ return d.candidates?.[0]?.content?.parts?.map(p=>p.text||"").join("")||"沒有回答";
+}
+async function chatAPI(key,model,messages,provider){
+ const url=provider==="groq"?
+ "https://api.groq.com/openai/v1/chat/completions":
+ "https://openrouter.ai/api/v1/chat/completions";
+ const headers={"Content-Type":"application/json","Authorization":"Bearer "+key};
+ if(provider==="openrouter"){
+  headers["HTTP-Referer"]=location.origin;
+  headers["X-Title"]="AI3 2.0";
+ }
+ const r=await fetch(url,{
+  method:"POST",headers,
+  body:JSON.stringify({
+   model,messages,temperature:0.7,max_tokens:2048
+  })
+ });
+ const body=await r.text();
+ if(!r.ok)throw Error("HTTP "+r.status+" "+body.slice(0,200));
+ return JSON.parse(body).choices?.[0]?.message?.content||"沒有回答";
+}
+async function askAI(){
+ if(busy)return;
+ const q=$("question").value.trim();
+ if(!q)return alert("請先輸入問題");
+ saveSettings();
+ const engines=[
+  {name:"Gemini",key:$("k1").value,model:$("m1").value,run:gemini},
+  {name:"Groq",key:$("k2").value,model:$("m2").value,provider:"groq"},
+  {name:"OpenRouter",key:$("k3").value,model:$("m3").value,provider:"openrouter"}
+ ].filter(x=>x.key&&x.model);
+ if(!engines.length)return alert("請先設定至少一個 AI API Key");
+ busy=true;$("send").disabled=true;
+ $("question").value="";
+ $("answer").textContent="正在啟動 AI 智慧路由……";
+ conversation.push({role:"user",content:q});
+ const errors=[];
+ try{
+  for(const e of engines){
+   $("status").textContent="正在連線 "+e.name;
+   addLog("嘗試連線 "+e.name);
+   try{
+    const answer=e.run?
+     await e.run(e.key,e.model,conversation):
+     await chatAPI(e.key,e.model,conversation,e.provider);
+    conversation.push({role:"assistant",content:answer});
+    $("answer").textContent=answer;
+    $("source").textContent="回答來源："+e.name+" / "+e.model;
+    $("status").textContent="完成";
+    addLog(e.name+" 回答成功");
+    return;
+   }catch(err){
+    errors.push(e.name+"："+err.message);
+    addLog(e.name+" 連線失敗，切換下一引擎");
+   }
+  }
+  conversation.pop();
+  $("answer").textContent="所有已設定引擎均無法回答：\n"+errors.join("\n")+"\n請檢查金鑰、模型、額度及網路。";
+  $("source").textContent="連線失敗";
+  $("status").textContent="需要檢查設定";
+ }finally{
+  busy=false;$("send").disabled=false;
+ }
+}
+function copyAnswer(){
+ const t=$("answer").textContent;
+ if(navigator.clipboard?.writeText){
+  navigator.clipboard.writeText(t).then(()=>alert("已複製")).catch(()=>alert("無法複製，請長按文字"));
+ }else alert("請長按回答文字複製");
+}
+loadSettings();
+</script>
+</body>
+</html>
